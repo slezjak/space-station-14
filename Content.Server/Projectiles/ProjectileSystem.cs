@@ -55,7 +55,7 @@ public sealed class ProjectileSystem : SharedProjectileSystem
         {
             if (modifiedDamage.Any() && !deleted)
             {
-                _color.RaiseEffect(Color.Red, new List<EntityUid> { target }, Filter.Pvs(target, entityManager: EntityManager));
+                //_color.RaiseEffect(Color.Red, new List<EntityUid> { target }, Filter.Pvs(target, entityManager: EntityManager));
             }
 
             _adminLogger.Add(LogType.BulletHit,

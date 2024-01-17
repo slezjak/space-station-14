@@ -262,7 +262,7 @@ public sealed partial class GunSystem : SharedGunSystem
                             {
                                 if (dmg.Any())
                                 {
-                                    _color.RaiseEffect(Color.Red, new List<EntityUid>() { hitEntity }, Filter.Pvs(hitEntity, entityManager: EntityManager));
+                                    //_color.RaiseEffect(Color.Red, new List<EntityUid>() { hitEntity }, Filter.Pvs(hitEntity, entityManager: EntityManager));
                                 }
 
                                 // TODO get fallback position for playing hit sound.
