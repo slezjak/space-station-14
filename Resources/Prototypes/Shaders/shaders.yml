@@ -10,6 +10,11 @@
     CircleMult: 0.5
 
 - type: shader
+  id: PainEffect
+  kind: source
+  path: "/Textures/Shaders/pain_effect.swsl"
+
+- type: shader
   id: GradientCircleMask
   kind: source
   path: "/Textures/Shaders/gradient_circle_mask.swsl"

@@ -1,0 +1,7 @@
+light_mode unshaded;
+
+uniform highp float time;
+
+void fragment() {
+    COLOR = vec4(1.0, 0.0, 0.0, time / 6.0);
+}

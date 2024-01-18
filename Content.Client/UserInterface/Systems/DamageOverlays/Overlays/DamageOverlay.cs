@@ -4,6 +4,7 @@ using Robust.Client.Player;
 using Robust.Shared.Enums;
 using Robust.Shared.Prototypes;
 using Robust.Shared.Timing;
+using Robust.Shared.Toolshed.Commands.Math;
 
 namespace Content.Client.UserInterface.Systems.DamageOverlays.Overlays;
 
@@ -51,7 +52,7 @@ public sealed class DamageOverlay : Overlay
         IoCManager.InjectDependencies(this);
         _oxygenShader = _prototypeManager.Index<ShaderPrototype>("GradientCircleMask").InstanceUnique();
         _critShader = _prototypeManager.Index<ShaderPrototype>("GradientCircleMask").InstanceUnique();
-        _bruteShader = _prototypeManager.Index<ShaderPrototype>("GradientCircleMask").InstanceUnique();
+        _bruteShader = _prototypeManager.Index<ShaderPrototype>("PainEffect").InstanceUnique();
     }
 
     protected override void Draw(in OverlayDrawArgs args)
@@ -122,44 +123,21 @@ public sealed class DamageOverlay : Overlay
             _oldCritLevel = CritLevel;
         }
 
-        /*
-         * darknessAlphaOuter is the maximum alpha for anything outside of the larger circle
-         * darknessAlphaInner (on the shader) is the alpha for anything inside the smallest circle
-         *
-         * outerCircleRadius is what we end at for max level for the outer circle
-         * outerCircleMaxRadius is what we start at for 0 level for the outer circle
-         *
-         * innerCircleRadius is what we end at for max level for the inner circle
-         * innerCircleMaxRadius is what we start at for 0 level for the inner circle
-         */
 
         // Makes debugging easier don't @ me
         float level = 0f;
         level = _oldBruteLevel;
 
-        // TODO: Lerping
         if (level > 0f && _oldCritLevel <= 0f)
         {
-            var pulseRate = 3f;
+            var pulseRate = 2f;
             var adjustedTime = time * pulseRate;
-            float outerMaxLevel = 2.0f * distance;
-            float outerMinLevel = 0.8f * distance;
-            float innerMaxLevel = 0.6f * distance;
-            float innerMinLevel = 0.2f * distance;
 
-            var outerRadius = outerMaxLevel - level * (outerMaxLevel - outerMinLevel);
-            var innerRadius = innerMaxLevel - level * (innerMaxLevel - innerMinLevel);
-
-            var pulse = MathF.Max(0f, MathF.Sin(adjustedTime));
+            var p = MathF.Max(0, 0.9f * MathF.Sin(9f * adjustedTime));
+            var h = 1.1f * MathF.Cos(0.5f * adjustedTime + MathF.Sin(5f * adjustedTime)) + MathF.Cos(2f * adjustedTime) + p;
+            var pulse = MathF.Max(0, h);
 
             _bruteShader.SetParameter("time", pulse);
-            _bruteShader.SetParameter("color", new Vector3(1f, 0f, 0f));
-            _bruteShader.SetParameter("darknessAlphaOuter", 0.8f);
-
-            _bruteShader.SetParameter("outerCircleRadius", outerRadius);
-            _bruteShader.SetParameter("outerCircleMaxRadius", outerRadius + 0.2f * distance);
-            _bruteShader.SetParameter("innerCircleRadius", innerRadius);
-            _bruteShader.SetParameter("innerCircleMaxRadius", innerRadius + 0.02f * distance);
             handle.UseShader(_bruteShader);
             handle.DrawRect(viewport, Color.White);
         }
