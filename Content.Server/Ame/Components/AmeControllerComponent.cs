@@ -59,7 +59,7 @@ public sealed partial class AmeControllerComponent : SharedAmeControllerComponen
     /// </summary>
     [DataField("injectSound")]
     [ViewVariables(VVAccess.ReadWrite)]
-    public SoundSpecifier InjectSound = new SoundPathSpecifier("/Audio/Effects/bang.ogg");
+    public SoundSpecifier InjectSound = new SoundPathSpecifier("/Audio/Effects/moan_machine.ogg");
 
     /// <summary>
     /// The last time this could have injected fuel into the AME.
