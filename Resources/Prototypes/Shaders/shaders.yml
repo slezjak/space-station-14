@@ -10,6 +10,11 @@
     CircleMult: 0.5
 
 - type: shader
+  id: FilmGrain
+  kind: source
+  path: "/Textures/Shaders/film_grain.swsl"
+
+- type: shader
   id: PainEffect
   kind: source
   path: "/Textures/Shaders/pain_effect.swsl"
