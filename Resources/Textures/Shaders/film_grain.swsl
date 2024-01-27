@@ -1,41 +1,12 @@
-// Credited to PelicanPolice on Shadertoy
-// Free for any purpose, commercial or otherwise.
-// But do post here so I can see where it got used!
-// If using on shadertoy, do link to this project on yours :)
+uniform highp float u_amount = 0.1;
+uniform highp float intensity = 0.0001;
 
-highp float noise(highp vec2 pos, highp float evolve) {
-
-    // Loop the evolution (over a very long period of time).
-    highp float e = fract((evolve*0.01));
-
-    // Coordinates
-    highp float cx  = pos.x*e;
-    //highp float cy  = sin(pos.y*e); // is this close enough to a 60hz interference? :smol:
-    highp float cy  = sin(pos.y*e);
-
-    highp float v2_2 = cx*2.4/cy*23.0+pow(abs(cy/22.4),3.3);
-    highp float v2_1 = fract(fract(v2_2));
-    highp float v2 = fract(2.0/v2_1);
-    highp float v3 = fract(cx*evolve/pow(abs(cy),0.050));
-
-    // Generate a "random" black or white value
-    return fract(0.1*v2*v3);
+highp float get_noise(highp vec2 uv) {
+    return fract(sin(dot(uv * TIME, vec2(12.9898,78.233))) * 43758.5453);
 }
 
-
 void fragment() {
-    highp vec2 coords = FRAGCOORD.xy;
-
-    // Increase this number to test performance
-    int intensity = 1;
-
-    highp vec3 colour;
-    for (int i = 0; i < intensity; i++)
-        {
-        // Generate a black to white pixel
-        colour = vec3(noise(coords,TIME));
-        }
-
-    // Output to screen
-    COLOR = vec4(colour,0.2);
+	float n = 3.5 * get_noise(UV) - 1.0;
+    highp vec4 tex = texture(TEXTURE, UV) * intensity;
+	COLOR = tex + n * u_amount;
 }

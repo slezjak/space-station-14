@@ -42,7 +42,8 @@ public sealed class GrainOverlay : Overlay
         var handle = args.WorldHandle;
 
         handle.UseShader(_grainShader);
-        handle.DrawRect(viewport, Color.White);
+        //handle.DrawRect(viewport, Color.White);
+        handle.DrawRect(viewport, new Color(153, 177, 222, 180));
         handle.UseShader(null);
     }
 }
