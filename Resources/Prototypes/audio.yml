@@ -1,39 +1,40 @@
-- type: ambientMusic
-  id: Morgue
-  sound:
-    params:
-      volume: -12
-    collection: AmbienceSpooky
-  rules: NearMorgue
-  priority: 4
-
-- type: ambientMusic
-  id: Holy
-  sound:
-    params:
-      volume: -12
-    collection: AmbienceHoly
-  rules: NearPrayable
-  priority: 4
-
-# Departments
-- type: ambientMusic
-  id: Medical
-  sound:
-    params:
-      volume: -12
-    collection: AmbienceMedical
-  rules: NearMedical
-  priority: 3
-
-- type: ambientMusic
-  id: Engineering
-  sound:
-    params:
-      volume: -12
-    collection: AmbienceEngineering
-  rules: NearEngineering
-  priority: 3
+#
+#- type: ambientMusic
+#  id: Morgue
+#  sound:
+#    params:
+#      volume: -12
+#    collection: AmbienceSpooky
+#  rules: NearMorgue
+#  priority: 4
+#
+#- type: ambientMusic
+#  id: Holy
+#  sound:
+#    params:
+#      volume: -12
+#    collection: AmbienceHoly
+#  rules: NearPrayable
+#  priority: 4
+#
+## Departments
+#- type: ambientMusic
+#  id: Medical
+#  sound:
+#    params:
+#      volume: -12
+#    collection: AmbienceMedical
+#  rules: NearMedical
+#  priority: 3
+#
+#- type: ambientMusic
+#  id: Engineering
+#  sound:
+#    params:
+#      volume: -12
+#    collection: AmbienceEngineering
+#  rules: NearEngineering
+#  priority: 3
 
 # General areas
 - type: ambientMusic
