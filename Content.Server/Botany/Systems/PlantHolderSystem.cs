@@ -7,6 +7,7 @@ using Content.Server.Ghost.Roles.Components;
 using Content.Server.Kitchen.Components;
 using Content.Server.Popups;
 using Content.Shared.Botany;
+using Content.Shared.Burial.Components;
 using Content.Shared.Chemistry.Reagent;
 using Content.Shared.Coordinates.Helpers;
 using Content.Shared.Examine;
@@ -68,6 +69,17 @@ public sealed class PlantHolderSystem : EntitySystem
 
             Update(uid, plantHolder);
         }
+    }
+
+    private int GetCurrentGrowthStage(Entity<PlantHolderComponent> entity)
+    {
+        var (uid, component) = entity;
+
+        if (component.Seed == null)
+            return 0;
+
+        var result = Math.Max(1, (int) (component.Age * component.Seed.GrowthStages / component.Seed.Maturation));
+        return result;
     }
 
     private void OnExamine(Entity<PlantHolderComponent> entity, ref ExaminedEvent args)
@@ -156,7 +168,14 @@ public sealed class PlantHolderSystem : EntitySystem
                 component.Seed = seed;
                 component.Dead = false;
                 component.Age = 1;
-                component.Health = component.Seed.Endurance;
+                if (seeds.HealthOverride != null)
+                {
+                    component.Health = seeds.HealthOverride.Value;
+                }
+                else
+                {
+                    component.Health = component.Seed.Endurance;
+                }
                 component.LastCycle = _gameTiming.CurTime;
 
                 QueueDel(args.Used);
@@ -191,7 +210,7 @@ public sealed class PlantHolderSystem : EntitySystem
             return;
         }
 
-        if (_tagSystem.HasTag(args.Used, "Shovel"))
+        if (HasComp<ShovelComponent>(args.Used))
         {
             if (component.Seed != null)
             {
@@ -261,13 +280,29 @@ public sealed class PlantHolderSystem : EntitySystem
                 return;
             }
 
+            if (GetCurrentGrowthStage(entity) <= 1)
+            {
+                _popup.PopupCursor(Loc.GetString("plant-holder-component-early-sample-message"), args.User);
+                return;
+            }
+
+            component.Health -= (_random.Next(3, 5) * 10);
+
+            float? healthOverride;
+            if (component.Harvest)
+            {
+                healthOverride = null;
+            }
+            else
+            {
+                healthOverride = component.Health;
+            }
             component.Seed.Unique = false;
-            var seed = _botany.SpawnSeedPacket(component.Seed, Transform(args.User).Coordinates, args.User);
+            var seed = _botany.SpawnSeedPacket(component.Seed, Transform(args.User).Coordinates, args.User, healthOverride);
             _randomHelper.RandomOffset(seed, 0.25f);
             var displayName = Loc.GetString(component.Seed.DisplayName);
             _popup.PopupCursor(Loc.GetString("plant-holder-component-take-sample-message",
                 ("seedName", displayName)), args.User);
-            component.Health -= (_random.Next(3, 5) * 10);
 
             if (component.Seed != null && component.Seed.CanScream)
             {
@@ -595,6 +630,7 @@ public sealed class PlantHolderSystem : EntitySystem
             RemovePlant(uid, component);
             component.ForceUpdate = true;
             Update(uid, component);
+            return;
         }
 
         CheckHealth(uid, component);
@@ -765,6 +801,7 @@ public sealed class PlantHolderSystem : EntitySystem
         component.Seed = null;
         component.Dead = false;
         component.Age = 0;
+        component.LastProduce = 0;
         component.Sampled = false;
         component.Harvest = false;
         component.ImproperLight = false;
@@ -895,7 +932,7 @@ public sealed class PlantHolderSystem : EntitySystem
             }
             else if (component.Age < component.Seed.Maturation)
             {
-                var growthStage = Math.Max(1, (int) (component.Age * component.Seed.GrowthStages / component.Seed.Maturation));
+                var growthStage = GetCurrentGrowthStage((uid, component));
 
                 _appearance.SetData(uid, PlantHolderVisuals.PlantRsi, component.Seed.PlantRsi.ToString(), app);
                 _appearance.SetData(uid, PlantHolderVisuals.PlantState, $"stage-{growthStage}", app);
