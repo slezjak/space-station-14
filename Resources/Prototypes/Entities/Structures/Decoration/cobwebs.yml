@@ -3,7 +3,7 @@
 - type: entity
   id: Cobweb1
   name: cobweb
-  description: Somebody should remove that.
+  description: What could have spun it in a place like this?
   placement:
     mode: SnapgridCenter
   components:

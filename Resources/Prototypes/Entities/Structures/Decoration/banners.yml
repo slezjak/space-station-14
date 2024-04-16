@@ -147,4 +147,13 @@
     sprite: Structures/Decoration/banner.rsi
     state: banner-green
 
+- type: entity
+  id: BannerAlchemy
+  parent: BannerBase
+  name: holy art banner
+  description: Some Alchemists believe that our Art is a mere entertainment or idle curiosity. Those who make it so will reap what they have sown -- nothing.
+  components:
+  - type: Sprite
+    sprite: Structures/Decoration/banner.rsi
+    state: banner-green
 

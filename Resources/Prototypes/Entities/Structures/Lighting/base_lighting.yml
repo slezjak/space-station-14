@@ -369,7 +369,7 @@
     startingCharge: 0
   - type: EmergencyLight
   - type: RotatingLight
-    speed: 40
+    speed: 230
   - type: Sprite
     sprite: Structures/Wallmounts/Lighting/emergency_light.rsi
     layers:

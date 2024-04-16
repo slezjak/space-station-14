@@ -2,7 +2,7 @@
   id: AltarBase
   parent: BaseStructure
   name: altar
-  description: Altar of the Gods.
+  description: 
   abstract: true
   components:
   - type: Anchorable

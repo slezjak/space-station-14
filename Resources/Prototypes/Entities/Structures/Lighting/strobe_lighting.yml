@@ -38,6 +38,7 @@
     softness: 1
     offset: "0, 0.35"
   - type: RotatingLight
+    speed: 230
   - type: Damageable
     damageContainer: Inorganic
     damageModifierSet: Metallic

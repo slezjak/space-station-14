@@ -38,9 +38,13 @@ public sealed class GrainOverlay : Overlay
         if (args.Viewport.Eye != eyeComp.Eye)
             return;
 
+        if (ScreenTexture == null)
+            return;
+        
         var viewport = args.WorldAABB;
         var handle = args.WorldHandle;
 
+        _grainShader.SetParameter("SCREEN_TEXTURE", ScreenTexture);
         handle.UseShader(_grainShader);
         //handle.DrawRect(viewport, Color.White);
         handle.DrawRect(viewport, new Color(153, 177, 222, 180));

@@ -1,12 +1,52 @@
 uniform highp float u_amount = 0.1;
 uniform highp float intensity = 0.0001;
+uniform sampler2D SCREEN_TEXTURE;
 
 highp float get_noise(highp vec2 uv) {
     return fract(sin(dot(uv * TIME, vec2(12.9898,78.233))) * 43758.5453);
 }
 
+highp vec2 rotateUV(highp vec2 uv, highp vec2 pivot, highp float rotation) {
+    float sine = sin(rotation);
+    float cosine = cos(rotation);
+    
+    uv -= pivot;
+    uv.x = uv.x * cosine - uv.y * sine;
+    uv.y = uv.x * sine + uv.y * cosine;
+    uv += pivot;
+
+    return uv;
+}
+
+
 void fragment() {
-	float n = 3.5 * get_noise(UV) - 1.0;
-    highp vec4 tex = texture(TEXTURE, UV) * intensity;
-	COLOR = tex + n * u_amount;
+	highp float n = 3.5 * get_noise(UV) - 1.0;
+
+    highp float w = 1.57;
+    highp mat2 uvRotate = mat2(cos(w), -sin(w),
+                         sin(w),  cos(w));
+
+    highp vec2 coord = FRAGCOORD.xy * SCREEN_PIXEL_SIZE.xy;
+
+
+    highp vec4 grainTex = texture(SCREEN_TEXTURE, coord) * (n);
+
+
+    highp float sine = sin(12);
+    highp float cosine = cos(12);
+    //grainTex.x = UV.y * cosine - UV.x * sine; // pretty cool
+    
+    grainTex.xyz = cross(grainTex.xyz, COLOR.xyz); // this is what you want
+    
+    
+    highp vec4 color = zTexture(UV);
+    highp float offset = 0.002;
+    highp vec3 distortTex = texture(SCREEN_TEXTURE, coord).xyz;
+    distortTex.xy += texture(SCREEN_TEXTURE, coord + offset).rg;
+    distortTex.yz += texture(SCREEN_TEXTURE, coord - offset).bb;
+    
+    
+    COLOR = mix(COLOR, vec4(distortTex.xyz, color.a), 0.3);
+    COLOR += mix(COLOR, grainTex, 0.35);
+    // * u_amount;
 }
